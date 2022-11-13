@@ -10,7 +10,7 @@ application-default-credentials:
 
 
 .PHONY: deploy
-deploy: deploy-js
+deploy: deploy-js deploy-go
 
 .PHONY: deploy-js
 deploy-js:
@@ -18,6 +18,19 @@ deploy-js:
 		--source=./js \
 		--runtime=nodejs16 \
 		--entry-point=app \
+		--trigger-http \
+		--allow-unauthenticated \
+		--region=asia-northeast1 \
+		--set-env-vars=SPREADSHEET_ID=$(SPREADSHEET_ID) \
+		--set-env-vars=SHEET_RANGE=$(SHEET_RANGE)
+
+
+.PHONY: deploy-go
+deploy-go:
+	$(GCLOUD) functions deploy example-adc-spreadsheet-go \
+		--source=./go \
+		--runtime=go116 \
+		--entry-point=App \
 		--trigger-http \
 		--allow-unauthenticated \
 		--region=asia-northeast1 \
